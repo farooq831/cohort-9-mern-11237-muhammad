@@ -1,21 +1,20 @@
 const pino = require('pino');
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 const logger = pino({
   level: process.env.LOG_LEVEL || 'info',
-  // Pretty, readable logs in development; plain JSON logs in production
-  // (JSON logs are what most log aggregators like Datadog/ELK expect)
-  transport: isProduction
-    ? undefined
-    : {
+ 
+  transport: isDevelopment
+    ? {
         target: 'pino-pretty',
         options: {
           colorize: true,
           translateTime: 'SYS:standard',
           ignore: 'pid,hostname',
         },
-      },
+      }
+    : undefined,
   // Redact sensitive fields so they never end up in log output
   redact: {
     paths: [
