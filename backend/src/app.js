@@ -36,6 +36,8 @@ const startServer = async () => {
     logger.info('MongoDB connected successfully');
   } catch (err) {
     logger.error({ err }, 'Unable to connect to MongoDB');
+    process.exitCode = 1;
+    return;
   }
 
   app.listen(PORT, () => {

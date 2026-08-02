@@ -3,9 +3,9 @@ const logger = require('../utils/logger');
 
 /**
  * Logs every incoming HTTP request and its response:
- * method, url, status code, and response time.
- * Uses the same pino instance or config as the rest of the app,
- * so all logs stay consistent (same redaction, same format).
+ * method, path, status code, and response time.
+ * Only the path is logged, never the query string,
+ * so secrets like ?token=... never end up in logs.
  */
 const requestLogger = pinoHttp({
   logger,
@@ -15,10 +15,10 @@ const requestLogger = pinoHttp({
     return 'info';
   },
   customSuccessMessage: (req, res) => {
-    return `${req.method} ${req.url} completed with ${res.statusCode}`;
+    return `${req.method} ${req.url.split('?')[0]} completed with ${res.statusCode}`;
   },
   customErrorMessage: (req, res, err) => {
-    return `${req.method} ${req.url} failed with ${res.statusCode}`;
+    return `${req.method} ${req.url.split('?')[0]} failed with ${res.statusCode}`;
   },
 });
 
