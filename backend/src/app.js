@@ -34,6 +34,12 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
+  if (!process.env.JWT_SECRET) {
+    logger.error('JWT_SECRET is not set. Refusing to start.');
+    process.exitCode = 1;
+    return;
+  }
+
   try {
     await connectDB();
     logger.info('MongoDB connected successfully');
@@ -43,7 +49,12 @@ const startServer = async () => {
     return;
   }
 
-  app.listen(PORT, () => {
+  app.listen(PORT, (err) => {
+    if (err) {
+      logger.error({ err }, 'Server failed to start');
+      process.exitCode = 1;
+      return;
+    }
     logger.info(`Server running on port ${PORT}`);
   });
 };

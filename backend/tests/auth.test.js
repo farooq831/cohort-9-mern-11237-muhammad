@@ -6,77 +6,109 @@ const User = require('../src/models/User');
 
 describe('Auth routes', () => {
   before(async () => {
-    await mongoose.connect(process.env.MONGO_URI);
+    try {
+      await mongoose.connect(process.env.MONGO_URI);
+    } catch (err) {
+      throw new Error(`Failed to connect to test database: ${err.message}`);
+    }
   });
 
   afterEach(async () => {
-    await User.deleteMany({});
+    try {
+      await User.deleteMany({});
+    } catch (err) {
+      throw new Error(`Failed to clean up users after test: ${err.message}`);
+    }
   });
 
   after(async () => {
-    await mongoose.connection.close();
+    try {
+      await mongoose.connection.close();
+    } catch (err) {
+      throw new Error(`Failed to close test database connection: ${err.message}`);
+    }
   });
 
   describe('POST /api/auth/signup', () => {
     it('creates a new user and returns a token', async () => {
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({ name: 'Test User', email: 'test@example.com', password: 'password123' });
+      try {
+        const res = await request(app)
+          .post('/api/auth/signup')
+          .send({ name: 'Test User', email: 'test@example.com', password: 'password123' });
 
-      expect(res.status).to.equal(201);
-      expect(res.body.success).to.be.true;
-      expect(res.body.data.token).to.exist;
-      expect(res.body.data.user.email).to.equal('test@example.com');
+        expect(res.status).to.equal(201);
+        expect(res.body.success).to.be.true;
+        expect(res.body.data.token).to.exist;
+        expect(res.body.data.user.email).to.equal('test@example.com');
+      } catch (err) {
+        throw new Error(`Signup test failed: ${err.message}`);
+      }
     });
 
     it('rejects duplicate email signup', async () => {
-      await User.create({
-        name: 'Existing User',
-        email: 'test@example.com',
-        password_hash: 'hashedvalue',
-      });
+      try {
+        await User.create({
+          name: 'Existing User',
+          email: 'test@example.com',
+          password_hash: 'hashedvalue',
+        });
 
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({ name: 'Test User', email: 'test@example.com', password: 'password123' });
+        const res = await request(app)
+          .post('/api/auth/signup')
+          .send({ name: 'Test User', email: 'test@example.com', password: 'password123' });
 
-      expect(res.status).to.equal(409);
-      expect(res.body.success).to.be.false;
+        expect(res.status).to.equal(409);
+        expect(res.body.success).to.be.false;
+      } catch (err) {
+        throw new Error(`Duplicate signup test failed: ${err.message}`);
+      }
     });
 
     it('rejects weak password', async () => {
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({ name: 'Test User', email: 'weak@example.com', password: '123' });
+      try {
+        const res = await request(app)
+          .post('/api/auth/signup')
+          .send({ name: 'Test User', email: 'weak@example.com', password: '123' });
 
-      expect(res.status).to.equal(400);
+        expect(res.status).to.equal(400);
+      } catch (err) {
+        throw new Error(`Weak password test failed: ${err.message}`);
+      }
     });
   });
 
   describe('POST /api/auth/login', () => {
     it('logs in with correct credentials', async () => {
-      await request(app)
-        .post('/api/auth/signup')
-        .send({ name: 'Login User', email: 'login@example.com', password: 'password123' });
+      try {
+        await request(app)
+          .post('/api/auth/signup')
+          .send({ name: 'Login User', email: 'login@example.com', password: 'password123' });
 
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ email: 'login@example.com', password: 'password123' });
+        const res = await request(app)
+          .post('/api/auth/login')
+          .send({ email: 'login@example.com', password: 'password123' });
 
-      expect(res.status).to.equal(200);
-      expect(res.body.data.token).to.exist;
+        expect(res.status).to.equal(200);
+        expect(res.body.data.token).to.exist;
+      } catch (err) {
+        throw new Error(`Login test failed: ${err.message}`);
+      }
     });
 
     it('rejects wrong password', async () => {
-      await request(app)
-        .post('/api/auth/signup')
-        .send({ name: 'Login User', email: 'login2@example.com', password: 'password123' });
+      try {
+        await request(app)
+          .post('/api/auth/signup')
+          .send({ name: 'Login User', email: 'login2@example.com', password: 'password123' });
 
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ email: 'login2@example.com', password: 'wrongpassword' });
+        const res = await request(app)
+          .post('/api/auth/login')
+          .send({ email: 'login2@example.com', password: 'wrongpassword' });
 
-      expect(res.status).to.equal(401);
+        expect(res.status).to.equal(401);
+      } catch (err) {
+        throw new Error(`Wrong password test failed: ${err.message}`);
+      }
     });
   });
 });

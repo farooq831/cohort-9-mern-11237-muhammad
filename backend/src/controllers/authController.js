@@ -5,12 +5,13 @@ const logger = require('../utils/logger');
 
 const signup = async (req, res, next) => {
   try {
-    const errors = validateSignupInput(req.body);
+    const body = req.body || {};
+    const errors = validateSignupInput(body);
     if (errors.length > 0) {
       throw new AppError(errors.join(', '), 400);
     }
 
-    const result = await authService.signup(req.body);
+    const result = await authService.signup(body);
     logger.info({ userId: result.user.id }, 'User signed up successfully');
 
     res.status(201).json({ success: true, data: result });
@@ -21,12 +22,13 @@ const signup = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const errors = validateLoginInput(req.body);
+    const body = req.body || {};
+    const errors = validateLoginInput(body);
     if (errors.length > 0) {
       throw new AppError(errors.join(', '), 400);
     }
 
-    const result = await authService.login(req.body);
+    const result = await authService.login(body);
     logger.info({ userId: result.user.id }, 'User logged in successfully');
 
     res.status(200).json({ success: true, data: result });
