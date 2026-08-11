@@ -50,32 +50,32 @@ const getNoteById = async (userId, noteId) => {
 };
 
 const updateNote = async (userId, noteId, { title, content }) => {
-  const note = await getNoteById(userId, noteId);
-
-  if (title !== undefined) note.title = title.trim();
-  if (content !== undefined) note.content = content;
-
   try {
+    const note = await getNoteById(userId, noteId);
+
+    if (title !== undefined) note.title = title.trim();
+    if (content !== undefined) note.content = content;
+
     await note.save();
+    return note;
   } catch (err) {
+    if (err instanceof AppError) throw err;
     throw new AppError('Could not update note, please try again', 500);
   }
-
-  return note;
 };
 
 const deleteNote = async (userId, noteId) => {
-  const note = await getNoteById(userId, noteId);
-
-  note.is_deleted = true;
-
   try {
+    const note = await getNoteById(userId, noteId);
+
+    note.is_deleted = true;
     await note.save();
+
+    return note;
   } catch (err) {
+    if (err instanceof AppError) throw err;
     throw new AppError('Could not delete note, please try again', 500);
   }
-
-  return note;
 };
 
 module.exports = { createNote, getNotes, getNoteById, updateNote, deleteNote };

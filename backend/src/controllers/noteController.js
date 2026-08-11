@@ -55,11 +55,21 @@ const updateNote = async (req, res, next) => {
       throw new AppError('Invalid request payload', 400);
     }
 
-    if (body.title !== undefined) {
-      const errors = validateNoteInput({ title: body.title, content: body.content });
-      if (errors.length > 0) {
-        throw new AppError(errors.join(', '), 400);
-      }
+    if (body.title === undefined && body.content === undefined) {
+      throw new AppError('Provide at least a title or content to update', 400);
+    }
+
+    const errors = validateNoteInput({
+      title: body.title !== undefined ? body.title : 'placeholder',
+      content: body.content,
+    });
+
+    if (body.title !== undefined && errors.includes('Title is required')) {
+      throw new AppError('Title is required', 400);
+    }
+
+    if (body.content !== undefined && typeof body.content !== 'string') {
+      throw new AppError('Content must be a string', 400);
     }
 
     const note = await noteService.updateNote(req.userId, req.params.id, body);

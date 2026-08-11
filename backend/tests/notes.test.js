@@ -92,6 +92,19 @@ describe('Notes routes', () => {
         throw new Error(`No auth test failed: ${err.message}`);
       }
     });
+
+    it('rejects a note with non-string content', async () => {
+      try {
+        const res = await request(app)
+          .post('/api/notes')
+          .set('Authorization', `Bearer ${token}`)
+          .send({ title: 'Bad content', content: { nested: true } });
+
+        expect(res.status).to.equal(400);
+      } catch (err) {
+        throw new Error(`Invalid content test failed: ${err.message}`);
+      }
+    });
   });
 
   describe('GET /api/notes', () => {

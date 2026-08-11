@@ -51,13 +51,13 @@ const startServer = async () => {
     return;
   }
 
-  app.listen(PORT, (err) => {
-    if (err) {
-      logger.error({ err }, 'Server failed to start');
-      process.exitCode = 1;
-      return;
-    }
+  const server = app.listen(PORT, () => {
     logger.info(`Server running on port ${PORT}`);
+  });
+
+  server.on('error', (err) => {
+    logger.error({ err }, 'Server failed to start');
+    process.exitCode = 1;
   });
 };
 

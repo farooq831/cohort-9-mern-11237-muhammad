@@ -27,6 +27,9 @@ const signup = async ({ name, email, password }) => {
     };
   } catch (err) {
     if (err instanceof AppError) throw err;
+    if (err.code === 11000) {
+      throw new AppError('Email is already registered', 409);
+    }
     throw new AppError('Signup failed, please try again', 500);
   }
 };
