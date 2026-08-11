@@ -8,6 +8,7 @@ const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const noteRoutes = require('./routes/noteRoutes');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/notes', noteRoutes);
 
 // no route matched anything above, so send a proper 404 instead of Express's default one
 app.use(notFound);
