@@ -3,9 +3,18 @@ const { validateSignupInput, validateLoginInput } = require('../utils/validators
 const AppError = require('../utils/AppError');
 const logger = require('../utils/logger');
 
+const isValidPayload = (body) => {
+  return body && typeof body === 'object' && !Array.isArray(body);
+};
+
 const signup = async (req, res, next) => {
   try {
     const body = req.body || {};
+
+    if (!isValidPayload(body)) {
+      throw new AppError('Invalid request payload', 400);
+    }
+
     const errors = validateSignupInput(body);
     if (errors.length > 0) {
       throw new AppError(errors.join(', '), 400);
@@ -23,6 +32,11 @@ const signup = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const body = req.body || {};
+
+    if (!isValidPayload(body)) {
+      throw new AppError('Invalid request payload', 400);
+    }
+
     const errors = validateLoginInput(body);
     if (errors.length > 0) {
       throw new AppError(errors.join(', '), 400);
