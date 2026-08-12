@@ -37,4 +37,24 @@ const validateLoginInput = (body) => {
   return errors;
 };
 
-module.exports = { validateSignupInput, validateLoginInput };
+const validateNoteInput = (body) => {
+  const errors = [];
+  const title = typeof body.title === 'string' ? body.title.trim() : '';
+  const content = body.content;
+
+  if (title.length < 1) {
+    errors.push('Title is required');
+  }
+
+  if (title.length > 255) {
+    errors.push('Title must be under 255 characters');
+  }
+
+  if (content !== undefined && typeof content !== 'string') {
+    errors.push('Content must be a string');
+  }
+
+  return errors;
+};
+
+module.exports = { validateSignupInput, validateLoginInput, validateNoteInput };
