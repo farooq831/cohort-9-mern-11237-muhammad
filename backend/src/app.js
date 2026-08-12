@@ -7,6 +7,7 @@ const requestLogger = require('./middleware/requestLogger');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+app.use('/api/auth', authRoutes);
+
 // no route matched anything above, so send a proper 404 instead of Express's default one
 app.use(notFound);
 
@@ -31,6 +34,12 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
+  if (!process.env.JWT_SECRET) {
+    logger.error('JWT_SECRET is not set. Refusing to start.');
+    process.exitCode = 1;
+    return;
+  }
+
   try {
     await connectDB();
     logger.info('MongoDB connected successfully');
@@ -40,7 +49,12 @@ const startServer = async () => {
     return;
   }
 
-  app.listen(PORT, () => {
+  app.listen(PORT, (err) => {
+    if (err) {
+      logger.error({ err }, 'Server failed to start');
+      process.exitCode = 1;
+      return;
+    }
     logger.info(`Server running on port ${PORT}`);
   });
 };
