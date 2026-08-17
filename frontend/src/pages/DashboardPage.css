@@ -1,69 +1,43 @@
-.dashboard {
-  min-height: 100vh;
-  background: var(--paper);
-}
-
-.dashboard-header {
+.dashboard-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 2rem;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
 }
 
-.dashboard-brand {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  color: var(--ink);
+.dashboard-heading {
+  font-size: 1.75rem;
 }
 
-.dashboard-header-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.dashboard-user {
-  font-size: 0.9rem;
-  color: var(--ink-soft);
-}
-
-.dashboard-logout {
-  padding: 0.5rem 1rem;
+.dashboard-new-note {
+  padding: 0.65rem 1.25rem;
   font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid var(--border);
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
   border-radius: var(--radius);
   cursor: pointer;
+  transition: opacity 0.15s ease;
 }
 
-.dashboard-logout:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.dashboard-new-note:hover {
+  opacity: 0.9;
 }
 
-.dashboard-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 73px);
-  padding: 2rem;
-}
-
-.dashboard-empty {
-  text-align: center;
-  max-width: 22rem;
-}
-
-.dashboard-empty h2 {
-  font-size: 1.4rem;
-  margin-bottom: 0.5rem;
-}
-
-.dashboard-empty p {
+.dashboard-status {
   color: var(--ink-soft);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.dashboard-status-error {
+  color: var(--danger);
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1.25rem;
 }

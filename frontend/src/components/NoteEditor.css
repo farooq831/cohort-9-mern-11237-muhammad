@@ -1,0 +1,141 @@
+.editor-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 35, 33, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 40;
+}
+
+.editor-panel {
+  position: relative;
+  width: 100%;
+  max-width: 40rem;
+  max-height: 90vh;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+}
+
+.editor-panel-rule {
+  width: 6px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+
+.editor-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 2rem 1.5rem;
+  overflow-y: auto;
+}
+
+.editor-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.editor-title-input {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--ink);
+  border: none;
+  outline: none;
+  padding: 0;
+  margin-bottom: 1rem;
+  background: none;
+}
+
+.editor-title-input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.5;
+}
+
+.editor-content-input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--ink);
+  border: none;
+  outline: none;
+  resize: vertical;
+  min-height: 12rem;
+  background: none;
+}
+
+.editor-content-input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.5;
+}
+
+.editor-error {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--danger);
+}
+
+.editor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.editor-word-count {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.editor-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.editor-cancel {
+  padding: 0.55rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.editor-cancel:hover:not(:disabled) {
+  color: var(--ink);
+  border-color: var(--ink-soft);
+}
+
+.editor-save {
+  padding: 0.55rem 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.editor-save:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.editor-cancel:disabled,
+.editor-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
