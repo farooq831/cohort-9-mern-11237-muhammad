@@ -55,6 +55,7 @@ const NoteEditor = ({ note, onSave, onCancel, saving }) => {
             aria-label="Note title"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
+            disabled={saving}
             autoFocus
           />
 
@@ -68,6 +69,7 @@ const NoteEditor = ({ note, onSave, onCancel, saving }) => {
             aria-label="Note content"
             value={content}
             onChange={(event) => setContent(event.target.value)}
+            disabled={saving}
             rows={12}
           />
 

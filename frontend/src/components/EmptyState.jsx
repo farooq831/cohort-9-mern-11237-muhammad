@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import './EmptyState.css';
 
 const EmptyState = ({ onNewNote }) => {
@@ -12,6 +13,10 @@ const EmptyState = ({ onNewNote }) => {
       </button>
     </div>
   );
+};
+
+EmptyState.propTypes = {
+  onNewNote: PropTypes.func.isRequired,
 };
 
 export default EmptyState;
