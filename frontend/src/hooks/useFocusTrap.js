@@ -1,7 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-// keeps keyboard focus inside a modal while it's open,
-// and gives it back to whatever was focused before opening
 const useFocusTrap = (isOpen) => {
   const containerRef = useRef(null);
   const previouslyFocused = useRef(null);
@@ -42,8 +40,12 @@ const useFocusTrap = (isOpen) => {
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      if (previouslyFocused.current) {
-        previouslyFocused.current.focus();
+
+      const fallback = previouslyFocused.current;
+      if (fallback && fallback.isConnected) {
+        fallback.focus();
+      } else {
+        document.body.focus();
       }
     };
   }, [isOpen]);

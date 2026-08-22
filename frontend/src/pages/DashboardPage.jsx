@@ -82,6 +82,11 @@ const DashboardPage = () => {
     }
   };
 
+  const closeDeleteConfirm = () => {
+    setNoteToDelete(null);
+    setDeleteError('');
+  };
+
   const handleDelete = async () => {
     if (!noteToDelete) return;
 
@@ -90,7 +95,7 @@ const DashboardPage = () => {
     try {
       await deleteNote(noteToDelete._id);
       setNotes((prev) => prev.filter((note) => note._id !== noteToDelete._id));
-      setNoteToDelete(null);
+      closeDeleteConfirm();
     } catch (err) {
       setDeleteError('Could not delete this note. Please try again.');
     } finally {
@@ -160,7 +165,7 @@ const DashboardPage = () => {
         <ConfirmDeleteModal
           note={noteToDelete}
           onConfirm={handleDelete}
-          onCancel={() => setNoteToDelete(null)}
+          onCancel={closeDeleteConfirm}
           deleting={deleting}
         />
       )}
