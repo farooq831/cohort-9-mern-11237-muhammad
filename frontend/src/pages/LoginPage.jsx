@@ -63,7 +63,11 @@ const LoginPage = () => {
       title="Log in"
       subtitle="Pick up right where you left off."
     >
-      {formError && <div className="form-alert">{formError}</div>}
+      {formError && (
+        <div className="form-alert" role="alert">
+          {formError}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="form-field">
@@ -78,8 +82,14 @@ const LoginPage = () => {
             className={`form-input ${fieldErrors.email ? 'has-error' : ''}`}
             value={form.email}
             onChange={handleChange}
+            aria-invalid={Boolean(fieldErrors.email)}
+            aria-describedby={fieldErrors.email ? 'email-error' : undefined}
           />
-          {fieldErrors.email && <p className="form-error">{fieldErrors.email}</p>}
+          {fieldErrors.email && (
+            <p className="form-error" id="email-error">
+              {fieldErrors.email}
+            </p>
+          )}
         </div>
 
         <div className="form-field">
@@ -94,9 +104,13 @@ const LoginPage = () => {
             className={`form-input ${fieldErrors.password ? 'has-error' : ''}`}
             value={form.password}
             onChange={handleChange}
+            aria-invalid={Boolean(fieldErrors.password)}
+            aria-describedby={fieldErrors.password ? 'password-error' : undefined}
           />
           {fieldErrors.password && (
-            <p className="form-error">{fieldErrors.password}</p>
+            <p className="form-error" id="password-error">
+              {fieldErrors.password}
+            </p>
           )}
         </div>
 

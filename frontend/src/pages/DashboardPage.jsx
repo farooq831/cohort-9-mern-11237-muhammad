@@ -20,9 +20,11 @@ const DashboardPage = () => {
   const [editingNote, setEditingNote] = useState(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   const [noteToDelete, setNoteToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   const loadNotes = async () => {
     setLoading(true);
@@ -43,21 +45,25 @@ const DashboardPage = () => {
 
   const openNewNote = () => {
     setEditingNote(null);
+    setSaveError('');
     setEditorOpen(true);
   };
 
   const openExistingNote = (note) => {
     setEditingNote(note);
+    setSaveError('');
     setEditorOpen(true);
   };
 
   const closeEditor = () => {
     setEditorOpen(false);
     setEditingNote(null);
+    setSaveError('');
   };
 
   const handleSave = async ({ title, content }) => {
     setSaving(true);
+    setSaveError('');
     try {
       if (editingNote) {
         const updated = await updateNote(editingNote._id, { title, content });
@@ -70,7 +76,7 @@ const DashboardPage = () => {
       }
       closeEditor();
     } catch (err) {
-      // keep the editor open so the person doesn't lose what they wrote
+      setSaveError('Could not save this note. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -80,12 +86,13 @@ const DashboardPage = () => {
     if (!noteToDelete) return;
 
     setDeleting(true);
+    setDeleteError('');
     try {
       await deleteNote(noteToDelete._id);
       setNotes((prev) => prev.filter((note) => note._id !== noteToDelete._id));
       setNoteToDelete(null);
     } catch (err) {
-      // leave the confirm dialog open so the person can try again
+      setDeleteError('Could not delete this note. Please try again.');
     } finally {
       setDeleting(false);
     }
@@ -105,7 +112,9 @@ const DashboardPage = () => {
       {loading && <p className="dashboard-status">Loading your notes…</p>}
 
       {!loading && loadError && (
-        <p className="dashboard-status dashboard-status-error">{loadError}</p>
+        <p className="dashboard-status dashboard-status-error" role="alert">
+          {loadError}
+        </p>
       )}
 
       {!loading && !loadError && notes.length === 0 && (
@@ -125,13 +134,26 @@ const DashboardPage = () => {
         </div>
       )}
 
+      {deleteError && (
+        <p className="dashboard-status dashboard-status-error" role="alert">
+          {deleteError}
+        </p>
+      )}
+
       {editorOpen && (
-        <NoteEditor
-          note={editingNote}
-          onSave={handleSave}
-          onCancel={closeEditor}
-          saving={saving}
-        />
+        <>
+          {saveError && (
+            <p className="dashboard-status dashboard-status-error" role="alert">
+              {saveError}
+            </p>
+          )}
+          <NoteEditor
+            note={editingNote}
+            onSave={handleSave}
+            onCancel={closeEditor}
+            saving={saving}
+          />
+        </>
       )}
 
       {noteToDelete && (

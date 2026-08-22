@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import './NoteCard.css';
 
 const formatDate = (isoString) => {
@@ -12,10 +13,10 @@ const NoteCard = ({ note, onOpen, onDelete }) => {
   return (
     <article className="note-card">
       <button className="note-card-body" onClick={() => onOpen(note)}>
-        <h3 className="note-card-title">{note.title}</h3>
-        <p className="note-card-preview">
+        <span className="note-card-title">{note.title}</span>
+        <span className="note-card-preview">
           {note.content ? note.content.slice(0, 140) : 'No content yet.'}
-        </p>
+        </span>
         <span className="note-card-date">
           Updated {formatDate(note.updatedAt)}
         </span>
@@ -30,6 +31,17 @@ const NoteCard = ({ note, onOpen, onDelete }) => {
       </button>
     </article>
   );
+};
+
+NoteCard.propTypes = {
+  note: PropTypes.shape({
+    _id: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    content: PropTypes.string,
+    updatedAt: PropTypes.string,
+  }).isRequired,
+  onOpen: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default NoteCard;

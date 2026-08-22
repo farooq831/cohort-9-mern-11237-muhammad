@@ -4,7 +4,7 @@ React + Vite frontend for the Notes App.
 
 ## Setup
 
-```
+```bash
 npm install
 cp .env.example .env
 npm run dev
