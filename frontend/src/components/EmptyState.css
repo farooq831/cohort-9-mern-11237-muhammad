@@ -1,0 +1,32 @@
+.empty-state {
+  text-align: center;
+  max-width: 22rem;
+  margin: 4rem auto;
+}
+
+.empty-state-title {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-sub {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state-cta {
+  padding: 0.7rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.empty-state-cta:hover {
+  opacity: 0.9;
+}

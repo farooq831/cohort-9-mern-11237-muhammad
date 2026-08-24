@@ -1,0 +1,43 @@
+.dashboard-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.dashboard-heading {
+  font-size: 1.75rem;
+}
+
+.dashboard-new-note {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.dashboard-new-note:hover {
+  opacity: 0.9;
+}
+
+.dashboard-status {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.dashboard-status-error {
+  color: var(--danger);
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1.25rem;
+}
