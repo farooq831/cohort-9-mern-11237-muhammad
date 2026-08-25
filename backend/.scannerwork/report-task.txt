@@ -1,0 +1,7 @@
+organization=farooq831
+projectKey=farooq831_cohort-9-mern-11237-muhammad
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.102462
+dashboardUrl=https://sonarcloud.io/dashboard?id=farooq831_cohort-9-mern-11237-muhammad
+ceTaskId=AaA3jiYokYaDRPpPyLHf
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AaA3jiYokYaDRPpPyLHf
