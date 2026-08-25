@@ -12,14 +12,15 @@ const authRoutes = require('./routes/authRoutes');
 const noteRoutes = require('./routes/noteRoutes');
 
 const app = express();
+app.disable('x-powered-by');
 
 app.use(requestLogger);
-app.use(cors());
-app.use(express.json());
 
-// strips any $ or . keys from request bodies before they ever
-// reach a database query, closing NoSQL injection risk at the
-// entry point rather than inside individual functions
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+}));
+
+app.use(express.json());
 app.use(sanitizeRequestBody);
 
 app.get('/api/health', (req, res) => {
