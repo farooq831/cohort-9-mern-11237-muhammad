@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
 import EmptyState from '../components/EmptyState';
 import NoteCard from '../components/NoteCard';
@@ -9,6 +9,8 @@ import {
   createNote,
   updateNote,
   deleteNote,
+  exportNotes,
+  importNotes,
 } from '../services/noteService';
 import './DashboardPage.css';
 
@@ -25,6 +27,10 @@ const DashboardPage = () => {
   const [noteToDelete, setNoteToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+
+  const [importError, setImportError] = useState('');
+  const [importing, setImporting] = useState(false);
+  const fileInputRef = useRef(null);
 
   const loadNotes = async () => {
     setLoading(true);
@@ -103,16 +109,90 @@ const DashboardPage = () => {
     }
   };
 
+  const handleExport = async () => {
+    try {
+      const data = await exportNotes();
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'my-notes-export.json';
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setImportError('Could not export notes. Please try again.');
+    }
+  };
+
+  const handleImportClick = () => {
+    setImportError('');
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    setImporting(true);
+    setImportError('');
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const importedNotes = await importNotes(parsed);
+      setNotes((prev) => [...importedNotes, ...prev]);
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        setImportError('That file is not valid JSON.');
+      } else {
+        setImportError(
+          err.response?.data?.message || 'Could not import that file.'
+        );
+      }
+    } finally {
+      setImporting(false);
+    }
+  };
+
   return (
     <Layout>
       <div className="dashboard-top">
         <h1 className="dashboard-heading">Your notes</h1>
-        {notes.length > 0 && (
-          <button className="dashboard-new-note" onClick={openNewNote}>
-            New note
+        <div className="dashboard-actions">
+          {notes.length > 0 && (
+            <button className="dashboard-secondary-btn" onClick={handleExport}>
+              Export
+            </button>
+          )}
+          <button
+            className="dashboard-secondary-btn"
+            onClick={handleImportClick}
+            disabled={importing}
+          >
+            {importing ? 'Importing…' : 'Import'}
           </button>
-        )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json"
+            className="sr-only-input"
+            onChange={handleFileSelected}
+          />
+          {notes.length > 0 && (
+            <button className="dashboard-new-note" onClick={openNewNote}>
+              New note
+            </button>
+          )}
+        </div>
       </div>
+
+      {importError && (
+        <p className="dashboard-status dashboard-status-error" role="alert">
+          {importError}
+        </p>
+      )}
 
       {loading && <p className="dashboard-status">Loading your notes…</p>}
 

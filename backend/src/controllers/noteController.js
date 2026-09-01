@@ -59,13 +59,11 @@ const updateNote = async (req, res, next) => {
       throw new AppError('Provide at least a title or content to update', 400);
     }
 
-    const errors = validateNoteInput({
-      title: body.title !== undefined ? body.title : 'placeholder',
-      content: body.content,
-    });
-
-    if (body.title !== undefined && errors.includes('Title is required')) {
-      throw new AppError('Title is required', 400);
+    if (body.title !== undefined) {
+      const errors = validateNoteInput({ title: body.title, content: body.content });
+      if (errors.length > 0 && errors.includes('Title is required')) {
+        throw new AppError('Title is required', 400);
+      }
     }
 
     if (body.content !== undefined && typeof body.content !== 'string') {
@@ -92,4 +90,37 @@ const deleteNote = async (req, res, next) => {
   }
 };
 
-module.exports = { createNote, getNotes, getNoteById, updateNote, deleteNote };
+const exportNotes = async (req, res, next) => {
+  try {
+    const notes = await noteService.exportNotes(req.userId);
+    logger.info({ userId: req.userId, count: notes.length }, 'Notes exported');
+
+    res.status(200).json({ success: true, data: notes });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const importNotes = async (req, res, next) => {
+  try {
+    const body = req.body || {};
+    const notesToImport = Array.isArray(body) ? body : body.notes;
+
+    const imported = await noteService.importNotes(req.userId, notesToImport);
+    logger.info({ userId: req.userId, count: imported.length }, 'Notes imported');
+
+    res.status(201).json({ success: true, data: imported });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  createNote,
+  getNotes,
+  getNoteById,
+  updateNote,
+  deleteNote,
+  exportNotes,
+  importNotes,
+};

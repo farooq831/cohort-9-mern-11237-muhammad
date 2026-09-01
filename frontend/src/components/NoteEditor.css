@@ -71,32 +71,66 @@
   opacity: 0.5;
 }
 
-.editor-content-input {
+.editor-title-input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.editor-content-wrapper {
   flex: 1;
+  min-height: 12rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Tiptap renders a contentEditable div here via EditorContent */
+.editor-content-input {
+  min-height: 12rem;
   font-family: var(--font-body);
   font-size: 0.95rem;
   line-height: 1.7;
   color: var(--ink);
-  border: none;
   outline: none;
-  resize: vertical;
-  min-height: 12rem;
-  background: none;
 }
 
-.editor-content-input::placeholder {
-  color: var(--ink-soft);
-  opacity: 0.5;
-}
-
-.editor-title-input:focus-visible,
 .editor-content-input:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
+.editor-content-input p {
+  margin: 0 0 0.75rem;
+}
+
+.editor-content-input h2 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+.editor-content-input ul,
+.editor-content-input ol {
+  margin: 0 0 0.75rem 1.25rem;
+  padding: 0;
+}
+
+.editor-content-input blockquote {
+  margin: 0 0 0.75rem;
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--rule);
+  color: var(--ink-soft);
+}
+
+.editor-content-input p.is-editor-empty:first-child::before {
+  content: 'Start writing…';
+  color: var(--ink-soft);
+  opacity: 0.5;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
 .editor-error {
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
   font-size: 0.85rem;
   color: var(--danger);
 }
@@ -105,7 +139,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border);
 }

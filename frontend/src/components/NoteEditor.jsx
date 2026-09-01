@@ -1,21 +1,44 @@
 import { useEffect, useState } from 'react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import PropTypes from 'prop-types';
+import EditorToolbar from './EditorToolbar';
 import useFocusTrap from '../hooks/useFocusTrap';
 import './NoteEditor.css';
 
 const NoteEditor = ({ note, onSave, onCancel, saving }) => {
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
   const [error, setError] = useState('');
 
   const isEditMode = Boolean(note);
   const containerRef = useFocusTrap(true);
 
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: note?.content || '',
+    editable: !saving,
+    editorProps: {
+      attributes: {
+        'aria-label': 'Note content',
+        class: 'editor-content-input',
+      },
+    },
+  });
+
   useEffect(() => {
     setTitle(note?.title || '');
-    setContent(note?.content || '');
     setError('');
+    if (editor) {
+      editor.commands.setContent(note?.content || '');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note]);
+
+  useEffect(() => {
+    if (editor) {
+      editor.setEditable(!saving);
+    }
+  }, [saving, editor]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -25,8 +48,13 @@ const NoteEditor = ({ note, onSave, onCancel, saving }) => {
       return;
     }
 
+    const content = editor ? editor.getHTML() : '';
     onSave({ title: title.trim(), content });
   };
+
+  const wordCount = editor
+    ? editor.getText().trim().split(/\s+/).filter(Boolean).length
+    : 0;
 
   return (
     <div className="editor-overlay">
@@ -59,19 +87,11 @@ const NoteEditor = ({ note, onSave, onCancel, saving }) => {
             autoFocus
           />
 
-          <label className="sr-only" htmlFor="note-content">
-            Note content
-          </label>
-          <textarea
-            id="note-content"
-            className="editor-content-input"
-            placeholder="Start writing…"
-            aria-label="Note content"
-            value={content}
-            onChange={(event) => setContent(event.target.value)}
-            disabled={saving}
-            rows={12}
-          />
+          <EditorToolbar editor={editor} />
+
+          <div className="editor-content-wrapper">
+            <EditorContent editor={editor} />
+          </div>
 
           {error && (
             <p className="editor-error" role="alert">
@@ -80,9 +100,7 @@ const NoteEditor = ({ note, onSave, onCancel, saving }) => {
           )}
 
           <div className="editor-footer">
-            <span className="editor-word-count">
-              {content.trim() ? content.trim().split(/\s+/).length : 0} words
-            </span>
+            <span className="editor-word-count">{wordCount} words</span>
 
             <div className="editor-actions">
               <button

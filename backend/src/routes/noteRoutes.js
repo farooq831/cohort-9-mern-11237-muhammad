@@ -7,10 +7,17 @@ const {
   getNoteById,
   updateNote,
   deleteNote,
+  exportNotes,
+  importNotes,
 } = require('../controllers/noteController');
 
 // every note route requires a logged-in user
 router.use(protect);
+
+// these two must be declared BEFORE the /:id routes below —
+// otherwise Express would treat "export"/"import" as a note id
+router.get('/export', exportNotes);
+router.post('/import', importNotes);
 
 router.post('/', createNote);
 router.get('/', getNotes);
